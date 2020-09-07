@@ -21,7 +21,7 @@ import apiRouter from "./api/routes/api";
 			app.use(express.urlencoded({extended: false}));
 			app.use(
 				cors({
-					origin: "http://localhost:1234",
+					origin: process.env.FRONTEND_URL,
 					exposedHeaders: ["x-token"],
 				})
 			);
