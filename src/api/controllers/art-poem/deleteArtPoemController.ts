@@ -6,6 +6,7 @@ import {deleteGCSFile, getGSCfilename} from "../../utils/gcsUtils";
 import {ArtPoem} from "../../../db/entities/ArtPoem";
 import {Like} from "../../../db/entities/Like";
 import {Comment} from "../../../db/entities/Comment";
+import path from "path";
 
 export const deleteArtPoemController = async (req: Request, res: Response) => {
 	const artPoemId = req.body.artPoemId as number;
@@ -21,8 +22,9 @@ export const deleteArtPoemController = async (req: Request, res: Response) => {
 		);
 	}
 
-	const keyFile =
-		"/Volumes/Seagate Backup Plus Drive/Dawid Programming Files/Projects/PoemArt/server/poem-art-40049b821725.json";
+	const keyFile = path.join(__dirname, process.env.GOOGLE_APPLICATION_CREDENTIALS as string);
+
+	if (!keyFile) throw new Error("Google Cloud Storage keyfile was not generated properly.");
 
 	const gcs = new Storage({
 		keyFilename: keyFile,

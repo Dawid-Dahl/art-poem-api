@@ -9,6 +9,7 @@ import {ArtPoem} from "../../../db/entities/ArtPoem";
 import {Storage, Bucket} from "@google-cloud/storage";
 import {Collection} from "../../../db/entities/Collection";
 import {getGSCfilename} from "../../utils/gcsUtils";
+import path from "path";
 
 export const editArtPoemController = async (req: Request, res: Response) => {
 	const {
@@ -23,8 +24,9 @@ export const editArtPoemController = async (req: Request, res: Response) => {
 		poemContent: string;
 	} = JSON.parse(req.body.editPoemFields);
 
-	const keyFile =
-		"/Volumes/Seagate Backup Plus Drive/Dawid Programming Files/Projects/PoemArt/server/poem-art-40049b821725.json";
+	const keyFile = path.join(__dirname, process.env.GOOGLE_APPLICATION_CREDENTIALS as string);
+
+	if (!keyFile) throw new Error("Google Cloud Storage keyfile was not generated properly.");
 
 	const gcs = new Storage({
 		keyFilename: keyFile,

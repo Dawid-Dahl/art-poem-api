@@ -5,7 +5,7 @@ import {replaceSpacesInString, jsonResponse} from "../utils/utils";
 
 export const uploadGCSProfileImageFile = (req: Request, res: Response, next: NextFunction) => {
 	const keyFile =
-		"/Volumes/Seagate Backup Plus Drive/Dawid Programming Files/Projects/PoemArt/server/poem-art-40049b821725.json";
+		"/Volumes/Seagate Backup Plus Drive/Dawid Programming Files/Projects/PoemArt/server/google-credentials.json";
 
 	const gcs = new Storage({
 		keyFilename: keyFile,

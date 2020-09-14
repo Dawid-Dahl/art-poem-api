@@ -5,6 +5,7 @@ import {jsonResponse} from "../../utils/utils";
 import {User} from "../../../db/entities/User";
 import {ArtPoem} from "../../../db/entities/ArtPoem";
 import {Collection} from "../../../db/entities/Collection";
+import path from "path";
 
 export const uploadArtPoemController = async (req: Request, res: Response) => {
 	const userRepo = getConnection(process.env.NODE_ENV).getRepository(User);
@@ -48,8 +49,9 @@ export const uploadArtPoemController = async (req: Request, res: Response) => {
 	} catch (e) {
 		console.log(e);
 
-		const keyFile =
-			"/Volumes/Seagate Backup Plus Drive/Dawid Programming Files/Projects/PoemArt/server/poem-art-40049b821725.json";
+		const keyFile = path.join(__dirname, process.env.GOOGLE_APPLICATION_CREDENTIALS as string);
+
+		if (!keyFile) throw new Error("Google Cloud Storage keyfile was not generated properly.");
 
 		const gcs = new Storage({
 			keyFilename: keyFile,

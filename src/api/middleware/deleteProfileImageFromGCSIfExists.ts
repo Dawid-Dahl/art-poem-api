@@ -17,7 +17,7 @@ export const deleteProfileImageFromGCSIfExists = async (
 		if (!user) throw new Error("No user was found in the database!");
 
 		const keyFile =
-			"/Volumes/Seagate Backup Plus Drive/Dawid Programming Files/Projects/PoemArt/server/poem-art-40049b821725.json";
+			"/Volumes/Seagate Backup Plus Drive/Dawid Programming Files/Projects/PoemArt/server/google-credentials.json";
 
 		const gcs = new Storage({
 			keyFilename: keyFile,
