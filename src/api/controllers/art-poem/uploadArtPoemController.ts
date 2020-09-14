@@ -49,7 +49,7 @@ export const uploadArtPoemController = async (req: Request, res: Response) => {
 	} catch (e) {
 		console.log(e);
 
-		const keyFile = path.join(__dirname, process.env.GOOGLE_APPLICATION_CREDENTIALS as string);
+		const keyFile = path.join("./", process.env.GOOGLE_APPLICATION_CREDENTIALS as string);
 
 		if (!keyFile) throw new Error("Google Cloud Storage keyfile was not generated properly.");
 

@@ -5,7 +5,7 @@ import {replaceSpacesInString, jsonResponse} from "../utils/utils";
 import path from "path";
 
 export const uploadGCSProfileImageFile = (req: Request, res: Response, next: NextFunction) => {
-	const keyFile = path.join(__dirname, process.env.GOOGLE_APPLICATION_CREDENTIALS as string);
+	const keyFile = path.join("./", process.env.GOOGLE_APPLICATION_CREDENTIALS as string);
 
 	if (!keyFile) throw new Error("Google Cloud Storage keyfile was not generated properly.");
 
