@@ -13,9 +13,6 @@ import apiRouter from "./api/routes/api";
 
 		console.log(config);
 
-		console.log("GOOGLE CREDENTIALS: ", process.env.GOOGLE_CREDENTIALS);
-		console.log("LOOOOOL");
-
 		createConnection(config).then(() => {
 			const app = express();
 			const PORT = process.env.PORT || 5000;
