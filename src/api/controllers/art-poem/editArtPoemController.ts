@@ -24,7 +24,10 @@ export const editArtPoemController = async (req: Request, res: Response) => {
 		poemContent: string;
 	} = JSON.parse(req.body.editPoemFields);
 
-	const keyFile = path.join("./", process.env.GOOGLE_APPLICATION_CREDENTIALS as string);
+	const keyFile =
+		process.env.NODE_ENV === "production"
+			? path.join("./", process.env.GOOGLE_APPLICATION_CREDENTIALS as string)
+			: path.join(__dirname, "../../../../", "poem-art-40049b821725.json");
 
 	if (!keyFile) throw new Error("Google Cloud Storage keyfile was not generated properly.");
 

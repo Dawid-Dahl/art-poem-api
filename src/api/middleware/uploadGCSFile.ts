@@ -2,10 +2,13 @@ import crypto from "crypto";
 import path from "path";
 import {Storage} from "@google-cloud/storage";
 import {Request, Response, NextFunction} from "express-serve-static-core";
-import {replaceSpacesInString} from "../utils/utils";
+import {replaceSpacesInString, resizeMulterImage} from "../utils/utils";
 
-export const uploadGCSFile = (req: Request, res: Response, next: NextFunction) => {
-	const keyFile = path.join("./", process.env.GOOGLE_APPLICATION_CREDENTIALS as string);
+export const uploadGCSFile = async (req: Request, res: Response, next: NextFunction) => {
+	const keyFile =
+		process.env.NODE_ENV === "production"
+			? path.join("./", process.env.GOOGLE_APPLICATION_CREDENTIALS as string)
+			: path.join(__dirname, "../../../", "poem-art-40049b821725.json");
 
 	if (!keyFile) throw new Error("Google Cloud Storage keyfile was not generated properly.");
 
@@ -30,6 +33,8 @@ export const uploadGCSFile = (req: Request, res: Response, next: NextFunction) =
 		.randomBytes(3)
 		.toString("hex")}-${sanitizedFileName}`;
 
+	const resizedMulterFile = await resizeMulterImage(req.file, 1920);
+
 	const file = bucket.file(fileName);
 
 	file.createWriteStream({
@@ -48,5 +53,5 @@ export const uploadGCSFile = (req: Request, res: Response, next: NextFunction) =
 
 			next();
 		})
-		.end(req.file.buffer);
+		.end(resizedMulterFile.buffer);
 };

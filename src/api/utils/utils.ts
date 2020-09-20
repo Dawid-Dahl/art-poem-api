@@ -1,5 +1,7 @@
 import {AuthJsonResponse, xTokenPayload, ArtPoem, Collection} from "../../types/types";
 import {Repository, Connection} from "typeorm";
+import sharp from "sharp";
+import sizeOf from "image-size";
 
 export const removeBearerFromTokenHeader = (tokenHeader?: string) => tokenHeader?.split(" ")[1];
 
@@ -68,3 +70,20 @@ export const deleteAllPoemsAssociatedWithCollection = (
 
 	return artPoemIds;
 };
+
+const unconfigResizeMulterImage = (
+	sharp: (input?: string | Buffer, options?: sharp.SharpOptions) => sharp.Sharp,
+	sizeOf: any
+) => async (file: Express.Multer.File, width: number): Promise<Express.Multer.File> => {
+	const dimensions = sizeOf(file.buffer);
+
+	if (dimensions.width < width) return file;
+
+	const resizedBuffer = await sharp(file.buffer).rotate().resize(width, null).toBuffer();
+
+	const resizedFile = {...file, buffer: resizedBuffer};
+
+	return resizedFile;
+};
+
+export const resizeMulterImage = unconfigResizeMulterImage(sharp, sizeOf);
