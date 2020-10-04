@@ -4,6 +4,7 @@ dist
 .env
 auth_users.db
 refresh_tokens.db
+DB BACKUPS/
 cryptography/
 poem-art-40049b821725.json
 .idea/
