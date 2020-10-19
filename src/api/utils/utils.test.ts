@@ -79,6 +79,8 @@ describe("doesPoemIncludeCollection", () => {
 });
 
 describe("sanitizeString", () => {
+	const strWithoutSpacesOrCommas =
+		"2018_CKS_15496_0001_000follower_of_hieronymus_bosch_the_harrowing_of_hell014627.jpg";
 	const strWithSpaces =
 		"2018_CKS_15496_0001_000 follower_of_hieronymus_bosch_the_harrowing_of_hell014627.jpg";
 	const strWithCommas =
@@ -117,6 +119,14 @@ describe("sanitizeString", () => {
 					commaSanitizer: replaceCommasInString,
 				})
 			).toEqual(expectedSpacesAndCommasRemoved);
+		});
+		it("returns the original string if nothing needs to be done replaced", () => {
+			expect(
+				sanitizeString(strWithoutSpacesOrCommas, "_", {
+					spaceSanitizer: replaceSpacesInString,
+					commaSanitizer: replaceCommasInString,
+				})
+			).toEqual(strWithoutSpacesOrCommas);
 		});
 	});
 	describe("sad path", () => {
