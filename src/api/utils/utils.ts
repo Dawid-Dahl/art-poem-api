@@ -140,17 +140,10 @@ const unconfigResizeMulterImage = (
 ) => async (file: Express.Multer.File, width: number): Promise<Express.Multer.File> => {
 	const dimensions = sizeOf(file.buffer);
 
-	console.log("----LOOOOOOOL-----");
-	console.log("DIMENSIONS", dimensions);
-	console.log("WIDTH", width);
-
 	if (dimensions.type === "png") {
 		if (dimensions.width > width) {
-			console.log("COMPRESSING PNG, RRRRRESIZE");
-
 			return await compressPngAndResize(file, 1920);
 		}
-		console.log("COMPRESSING PNG, NOT RESIZE");
 
 		return await compressPng(file);
 	}
