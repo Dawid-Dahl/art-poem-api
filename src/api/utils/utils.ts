@@ -129,8 +129,6 @@ const compressPngAndResize = async (
 
 	const resizedFile = {...file, mimetype: "image/jpeg", buffer: resizedBuffer};
 
-	console.log(resizedFile);
-
 	return resizedFile;
 };
 
