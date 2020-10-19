@@ -110,7 +110,7 @@ describe("sanitizeString", () => {
 				})
 			).toEqual(expectedCommasRemoved);
 		});
-		it("replaces spaces", () => {
+		it("replaces spaces and commas", () => {
 			expect(
 				sanitizeString(strWithSpacesAndCommas, "_", {
 					spaceSanitizer: replaceSpacesInString,
@@ -120,14 +120,14 @@ describe("sanitizeString", () => {
 		});
 	});
 	describe("sad path", () => {
-		it("it throws an error if not given sanitizeFns arg", () => {
+		it("throws an error if not given sanitizeFns arg", () => {
 			expect(() =>
 				//@ts-ignore
 				sanitizeString(strWithCommas, "_")
 			).toThrowError("Invalid function arguments");
 		});
 
-		it("it throws an error if not given replaceWith arg", () => {
+		it("throws an error if not given replaceWith arg", () => {
 			expect(() =>
 				//@ts-ignore
 				sanitizeString(strWithCommas, {
@@ -137,14 +137,14 @@ describe("sanitizeString", () => {
 			).toThrowError("Invalid function arguments");
 		});
 
-		it("it throws an error if not given sanitizeFns or replaceWith args", () => {
+		it("throws an error if not given sanitizeFns or replaceWith args", () => {
 			expect(() =>
 				//@ts-ignore
 				sanitizeString(strWithCommas)
 			).toThrowError("Invalid function arguments");
 		});
 
-		it("it throws an error if not given any args", () => {
+		it("throws an error if not given any args", () => {
 			expect(() =>
 				//@ts-ignore
 				sanitizeString()

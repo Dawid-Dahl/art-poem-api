@@ -96,11 +96,64 @@ export const deleteAllPoemsAssociatedWithCollection = (
 	return artPoemIds;
 };
 
+const compressPng = async (file: Express.Multer.File): Promise<Express.Multer.File> => {
+	const resizedBuffer = await sharp(file.buffer)
+		.rotate()
+		.toFormat("jpeg")
+		.jpeg({
+			quality: 80,
+			chromaSubsampling: "4:4:4",
+			force: true,
+		})
+		.toBuffer();
+
+	const resizedFile = {...file, buffer: resizedBuffer};
+
+	return resizedFile;
+};
+
+const compressPngAndResize = async (
+	file: Express.Multer.File,
+	width: number
+): Promise<Express.Multer.File> => {
+	const resizedBuffer = await sharp(file.buffer)
+		.rotate()
+		.resize(width, null)
+		.toFormat("jpeg")
+		.jpeg({
+			quality: 80,
+			chromaSubsampling: "4:4:4",
+			force: true,
+		})
+		.toBuffer();
+
+	const resizedFile = {...file, mimetype: "image/jpeg", buffer: resizedBuffer};
+
+	console.log(resizedFile);
+
+	return resizedFile;
+};
+
 const unconfigResizeMulterImage = (
 	sharp: (input?: string | Buffer, options?: sharp.SharpOptions) => sharp.Sharp,
 	sizeOf: any
 ) => async (file: Express.Multer.File, width: number): Promise<Express.Multer.File> => {
 	const dimensions = sizeOf(file.buffer);
+
+	console.log("----LOOOOOOOL-----");
+	console.log("DIMENSIONS", dimensions);
+	console.log("WIDTH", width);
+
+	if (dimensions.type === "png") {
+		if (dimensions.width > width) {
+			console.log("COMPRESSING PNG, RRRRRESIZE");
+
+			return await compressPngAndResize(file, 1920);
+		}
+		console.log("COMPRESSING PNG, NOT RESIZE");
+
+		return await compressPng(file);
+	}
 
 	if (dimensions.width < width) return file;
 
