@@ -1,4 +1,10 @@
-import {removeBearerFromTokenHeader, doesPoemIncludeCollection} from "./utils";
+import {
+	removeBearerFromTokenHeader,
+	doesPoemIncludeCollection,
+	sanitizeString,
+	replaceSpacesInString,
+	replaceCommasInString,
+} from "./utils";
 import {
 	poemWithOneCollection,
 	poemWithThreeCollections,
@@ -68,6 +74,81 @@ describe("doesPoemIncludeCollection", () => {
 			expect(() => doesPoemIncludeCollection(mockPoem, collectionId)).toThrowError(
 				"poem doesn't contain collection field"
 			);
+		});
+	});
+});
+
+describe("sanitizeString", () => {
+	const strWithSpaces =
+		"2018_CKS_15496_0001_000 follower_of_hieronymus_bosch_the_harrowing_of_hell014627.jpg";
+	const strWithCommas =
+		"2018_CKS_15496_0001_000(follower_of_hieronymus_bosch_the_harrowing_of_hell014627).jpg";
+	const strWithSpacesAndCommas =
+		"2018_CKS_15496_0001_000 (follower_of_hieronymus_bosch_the_harrowing_of_hell014627).jpg";
+
+	const expectedSpacesRemoved =
+		"2018_CKS_15496_0001_000_follower_of_hieronymus_bosch_the_harrowing_of_hell014627.jpg";
+	const expectedCommasRemoved =
+		"2018_CKS_15496_0001_000_follower_of_hieronymus_bosch_the_harrowing_of_hell014627_.jpg";
+	const expectedSpacesAndCommasRemoved =
+		"2018_CKS_15496_0001_000__follower_of_hieronymus_bosch_the_harrowing_of_hell014627_.jpg";
+
+	describe("happy path", () => {
+		it("replaces spaces", () => {
+			expect(
+				sanitizeString(strWithSpaces, "_", {
+					spaceSanitizer: replaceSpacesInString,
+					commaSanitizer: replaceCommasInString,
+				})
+			).toEqual(expectedSpacesRemoved);
+		});
+		it("replaces commas", () => {
+			expect(
+				sanitizeString(strWithCommas, "_", {
+					spaceSanitizer: replaceSpacesInString,
+					commaSanitizer: replaceCommasInString,
+				})
+			).toEqual(expectedCommasRemoved);
+		});
+		it("replaces spaces", () => {
+			expect(
+				sanitizeString(strWithSpacesAndCommas, "_", {
+					spaceSanitizer: replaceSpacesInString,
+					commaSanitizer: replaceCommasInString,
+				})
+			).toEqual(expectedSpacesAndCommasRemoved);
+		});
+	});
+	describe("sad path", () => {
+		it("it throws an error if not given sanitizeFns arg", () => {
+			expect(() =>
+				//@ts-ignore
+				sanitizeString(strWithCommas, "_")
+			).toThrowError("Invalid function arguments");
+		});
+
+		it("it throws an error if not given replaceWith arg", () => {
+			expect(() =>
+				//@ts-ignore
+				sanitizeString(strWithCommas, {
+					spaceSanitizer: replaceSpacesInString,
+					commaSanitizer: replaceCommasInString,
+				})
+			).toThrowError("Invalid function arguments");
+		});
+
+		it("it throws an error if not given sanitizeFns or replaceWith args", () => {
+			expect(() =>
+				//@ts-ignore
+				sanitizeString(strWithCommas)
+			).toThrowError("Invalid function arguments");
+		});
+
+		it("it throws an error if not given any args", () => {
+			expect(() =>
+				//@ts-ignore
+				sanitizeString()
+			).toThrowError("Invalid function arguments");
 		});
 	});
 });

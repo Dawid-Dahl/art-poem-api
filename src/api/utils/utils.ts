@@ -19,8 +19,33 @@ export const extractPayloadFromBase64JWT = (jwt: string | undefined): xTokenPayl
 				.map(x => x.toString("utf8"))
 				.map(x => JSON.parse(x))[0];
 
+export const sanitizeString = (
+	str: string,
+	replaceWith: string,
+	sanitizeFns: {
+		spaceSanitizer: (str: string, replaceWith: string) => string;
+		commaSanitizer: (str: string, replaceWith: string) => string;
+	}
+): string => {
+	if (!str || !replaceWith || !sanitizeFns) {
+		throw new Error("Invalid function arguments");
+	}
+
+	const strWithoutSpaces = str.includes(" ") ? sanitizeFns.spaceSanitizer(str, replaceWith) : str;
+
+	const strWithoutCommas =
+		strWithoutSpaces.includes("(") || strWithoutSpaces.includes(")")
+			? sanitizeFns.commaSanitizer(strWithoutSpaces, replaceWith)
+			: strWithoutSpaces;
+
+	return strWithoutCommas;
+};
+
 export const replaceSpacesInString = (str: string, replaceWith: string): string =>
 	str.replace(/\s/g, replaceWith);
+
+export const replaceCommasInString = (str: string, replaceWith: string): string =>
+	str.replace(/\(|\)/g, replaceWith);
 
 export const doesPoemIncludeCollection = (poem: ArtPoem | undefined, collectionId: number) => {
 	if (!poem)

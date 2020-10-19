@@ -2,7 +2,12 @@ import crypto from "crypto";
 import path from "path";
 import {Storage} from "@google-cloud/storage";
 import {Request, Response, NextFunction} from "express-serve-static-core";
-import {replaceSpacesInString, resizeMulterImage} from "../utils/utils";
+import {
+	replaceCommasInString,
+	replaceSpacesInString,
+	resizeMulterImage,
+	sanitizeString,
+} from "../utils/utils";
 
 export const uploadGCSFile = async (req: Request, res: Response, next: NextFunction) => {
 	const keyFile =
@@ -25,9 +30,10 @@ export const uploadGCSFile = async (req: Request, res: Response, next: NextFunct
 		return;
 	}
 
-	const sanitizedFileName = req.file.originalname.includes(" ")
-		? replaceSpacesInString(req.file.originalname, "_")
-		: req.file.originalname;
+	const sanitizedFileName = sanitizeString(req.file.originalname, "_", {
+		spaceSanitizer: replaceSpacesInString,
+		commaSanitizer: replaceCommasInString,
+	});
 
 	const fileName = `${req.user}/${Date.now()}-${crypto
 		.randomBytes(3)
