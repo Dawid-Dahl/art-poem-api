@@ -112,7 +112,7 @@ const compressPng = async (file: Express.Multer.File): Promise<Express.Multer.Fi
 	return resizedFile;
 };
 
-const compressPngAndResize = async (
+const compressAndResizePng = async (
 	file: Express.Multer.File,
 	width: number
 ): Promise<Express.Multer.File> => {
@@ -140,7 +140,7 @@ const unconfigResizeMulterImage = (
 
 	if (dimensions.type === "png") {
 		if (dimensions.width > width) {
-			return await compressPngAndResize(file, 1920);
+			return await compressAndResizePng(file, 1920);
 		}
 
 		return await compressPng(file);
